@@ -1,7 +1,20 @@
-import Image from "next/image";
-import BirthdayCard from "../components/BirthdayCard";
-export default function Home() {
+// app/page.js (or page.tsx)
+
+import dynamic from 'next/dynamic';
+
+// Dynamically import the BirthdayCard component, disabling Server-Side Rendering (SSR)
+const BirthdayCardNoSSR = dynamic(
+  () => import('../components/BirthdayCard'), 
+  { 
+    ssr: false // <-- This is the crucial setting
+  }
+);
+
+export default function Page() {
   return (
-   <BirthdayCard />
+    <main>
+      {/* Render the dynamically imported component */}
+      <BirthdayCardNoSSR />
+    </main>
   );
 }
