@@ -9,9 +9,11 @@ export default function BirthdayCard() {
   const [isClient, setIsClient] = useState(false);
   
   // --- CONFIGURATION SECTION (EDIT THIS) ---
+  // NOTE: Ensure files (stefan.png, rege.png, muzica.mp3) are located in your public/ folder.
+
   // 1. Put the link to your friend's photo here:
   const [photoUrl] = useState('/stefan.png'); 
-  // 2. Put your message here:
+  // 2. Put your main message here:
   const [message] = useState("Happy Birthday! Multa sanatate, fericire si multe realizari."); 
     // 3. New photo for the table (can be the same or different)
     const [tablePhotoUrl] = useState('/rege.png'); 
@@ -40,7 +42,7 @@ export default function BirthdayCard() {
   const topMessageMeshRef = useRef(null); 
   const audioRef = useRef(null); // Referința pentru elementul Audio
 
-  // --- Setup Audio & Initial Client Setup (UNCHANGED) ---
+  // --- Setup Audio & Initial Client Setup ---
   useEffect(() => {
     setIsClient(true);
 
@@ -60,7 +62,7 @@ export default function BirthdayCard() {
     };
   }, [musicUrl]);
 
-  // --- Functia de Control Muzică (UNCHANGED) ---
+  // --- Functia de Control Muzică ---
   const toggleMusic = () => {
     if (!audioRef.current) return;
 
@@ -78,7 +80,7 @@ export default function BirthdayCard() {
     }
   };
   
-  // Custom Tweening Functions (UNCHANGED)
+  // Custom Tweening Functions
   const easeOutBack = (t) => {
     const s = 1.70158;
     return (t = t - 1) * t * ((s + 1) * t + s) + 1;
@@ -116,7 +118,7 @@ export default function BirthdayCard() {
       });
   };
 
-  // --- 3D SCENE SETUP (MODIFIED CAMERA) ---
+  // --- 3D SCENE SETUP ---
   useEffect(() => {
     if (!isClient || !mountRef.current) return;
 
@@ -130,7 +132,7 @@ export default function BirthdayCard() {
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    // ADJUSTED CAMERA POSITION FOR MOBILE VIEWPORT (more height/less depth)
+    // Adjusted camera position for mobile viewport
     camera.position.set(0, 3.5, 8); 
     cameraRef.current = camera;
 
@@ -145,7 +147,6 @@ export default function BirthdayCard() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    // ADJUSTED MAX DISTANCE
     controls.minDistance = 5;
     controls.maxDistance = 12; 
     controls.maxPolarAngle = Math.PI / 2 - 0.1; 
@@ -153,7 +154,7 @@ export default function BirthdayCard() {
     controls.autoRotateSpeed = 1.0;
     controlsRef.current = controls;
 
-    // 3. Lighting (UNCHANGED)
+    // 3. Lighting 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
     scene.add(ambientLight);
 
@@ -173,7 +174,7 @@ export default function BirthdayCard() {
     backLight.position.set(-5, 2, -5);
     scene.add(backLight);
 
-    // 4. Objects (UNCHANGED)
+    // 4. Objects
     // Floor
     const floorGeo = new THREE.PlaneGeometry(50, 50);
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.2, metalness: 0.5 });
@@ -237,7 +238,7 @@ export default function BirthdayCard() {
     bow.rotation.x = Math.PI / 2;
     lidGroup.add(bow);
 
-    // --- INNER CONTENT (Hidden initially) (UNCHANGED) ---
+    // --- INNER CONTENT (Hidden initially) ---
     const contentGroup = new THREE.Group();
     contentGroup.scale.set(0.1, 0.1, 0.1); // Small starting size
     contentGroup.visible = false;
@@ -270,7 +271,7 @@ export default function BirthdayCard() {
         });
     }
 
-    // --- Photo on the table/floor (UNCHANGED) ---
+    // --- Photo on the table/floor ---
     const tablePhotoGroup = new THREE.Group();
     tablePhotoGroup.position.set(3, -1.9, -1); 
     tablePhotoGroup.rotation.x = -Math.PI / 2; 
@@ -295,14 +296,14 @@ export default function BirthdayCard() {
         });
     }
 
-    // --- Text "La Mulți Ani!" under the table photo (UNCHANGED) ---
+    // --- Text "La Mulți Ani!" under the table photo ---
     const tableTextCanvas = document.createElement('canvas');
     tableTextCanvas.width = 512;
     tableTextCanvas.height = 256;
     const tableTextCtx = tableTextCanvas.getContext('2d');
     
    tableTextCtx.fillStyle = 'rgba(0, 0, 0, 0)'; // Fundal transparent
-    tableTextCtx.fillRect(0, 0, 512, 256);
+    tableTextCtx.fillRect(0, 0, 512, 256);
     
     tableTextCtx.font = 'bold 60px Inter, sans-serif';
     tableTextCtx.fillStyle = '#ff4757';
@@ -322,7 +323,7 @@ export default function BirthdayCard() {
     tablePhotoGroup.add(tableTextPlane);
 
 
-    // --- "La multi ani Stefan" above the main image (UNCHANGED) ---
+    // --- "La multi ani Stefan" above the main image ---
     const topMessageCanvas = document.createElement('canvas');
     topMessageCanvas.width = 1024;
     topMessageCanvas.height = 200;
@@ -349,13 +350,13 @@ export default function BirthdayCard() {
     contentGroup.add(topMessagePlane);
     topMessageMeshRef.current = topMessagePlane;
 
-    // 3D Message Text (Original Canvas Texture) (UNCHANGED)
+    // 3D Message Text (Original Canvas Texture)
     const textGroup = new THREE.Group();
     textGroup.position.set(3, 0.5, 0); 
     contentGroup.add(textGroup);
     textMeshRef.current = textGroup;
 
-    // --- CONFETTI PARTICLES (UNCHANGED) ---
+    // --- CONFETTI PARTICLES ---
     const confettiCount = 300;
     const confettiGeo = new THREE.BufferGeometry();
     const confettiPos = new Float32Array(confettiCount * 3);
@@ -389,7 +390,7 @@ export default function BirthdayCard() {
     scene.add(confettiSystem);
     confettiSystemRef.current = { mesh: confettiSystem, vels: confettiVel, geo: confettiGeo, active: false };
 
-    // --- ANIMATION LOOP (UNCHANGED) ---
+    // --- ANIMATION LOOP ---
     let reqId;
     const animate = () => {
       reqId = requestAnimationFrame(animate);
@@ -443,7 +444,7 @@ export default function BirthdayCard() {
     };
   }, [isClient, uiStep, photoUrl, tablePhotoUrl, tableMessage, topMessage, message]);
 
-  // --- CREATE ORIGINAL MESSAGE TEXTURE (UNCHANGED) ---
+  // --- CREATE ORIGINAL MESSAGE TEXTURE ---
   useEffect(() => {
       if(message && textMeshRef.current) {
           const canvas = document.createElement('canvas');
@@ -486,7 +487,7 @@ export default function BirthdayCard() {
   }, [message]);
 
 
-  // --- CUSTOM ANIMATION HANDLER (UNCHANGED) ---
+  // --- CUSTOM ANIMATION HANDLER ---
   const handleOpenGift = async () => {
     if(uiStep === 'opened' || !cameraRef.current || !controlsRef.current || !giftRef.current || !lidRef.current || !contentRef.current) return;
     setUiStep('opened');
@@ -653,40 +654,40 @@ justifyContent: 'center',
       
       <style jsx global>{`
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 30px rgba(255,0,128,0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(255,0,128,0.8); } 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255,0,128,0.5); } }
-        
-        /* --- RESPONSIVE STYLES FOR MOBILE --- */
-        @media (max-width: 600px) {
-            /* Ready Text */
-            .ready-text {
-                font-size: 4vw !important; /* Smaller font for message */
-                letter-spacing: 0.5px !important;
-            }
+        
+        /* --- RESPONSIVE STYLES FOR MOBILE --- */
+        @media (max-width: 600px) {
+            /* Ready Text */
+            .ready-text {
+                font-size: 4vw !important; /* Smaller font for message */
+                letter-spacing: 0.5px !important;
+            }
 
-            /* Main Open Button */
-            .open-button {
-                padding: 3.5vw 10vw !important; /* Responsive padding */
-                font-size: 5vw !important; /* Responsive font size */
-                font-weight: 700 !important;
-            }
+            /* Main Open Button */
+            .open-button {
+                padding: 3.5vw 10vw !important; /* Responsive padding */
+                font-size: 5vw !important; /* Responsive font size */
+                font-weight: 700 !important;
+            }
 
-            /* Control Group (Stop Music/Reset) */
-            .opened-ui-controls {
-                flex-direction: column; /* Stack buttons vertically */
-                gap: 10px !important;
-                align-items: center;
-                bottom: 10% !important; /* Move higher up from the bottom */
-                padding: 10px;
-            }
-            
-            /* Individual Control Buttons */
-            .control-button {
-                width: 70vw; /* Make them wide */
-                max-width: 250px;
-                padding: 12px !important;
-                font-size: 4vw !important; /* Responsive font size */
-                border-radius: 25px !important;
-            }
-        }
+            /* Control Group (Stop Music/Reset) */
+            .opened-ui-controls {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 10px !important;
+                align-items: center;
+                bottom: 10% !important; /* Move higher up from the bottom */
+                padding: 10px;
+            }
+            
+            /* Individual Control Buttons */
+            .control-button {
+                width: 70vw; /* Make them wide */
+                max-width: 250px;
+                padding: 12px !important;
+                font-size: 4vw !important; /* Responsive font size */
+                border-radius: 25px !important;
+            }
+        }
       `}</style>
     </div>
   );
