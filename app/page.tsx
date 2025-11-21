@@ -1,4 +1,6 @@
-// app/page.js (or page.tsx)
+// app/page.tsx
+
+'use client'; // <-- ADD THIS LINE
 
 import dynamic from 'next/dynamic';
 
@@ -6,7 +8,7 @@ import dynamic from 'next/dynamic';
 const BirthdayCardNoSSR = dynamic(
   () => import('../components/BirthdayCard'), 
   { 
-    ssr: false // <-- This is the crucial setting
+    ssr: false // This is now allowed because the file is a Client Component
   }
 );
 
